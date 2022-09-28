@@ -1,5 +1,11 @@
 # Get started
 
+## Testnet setup
+1. Deploy your contract by running `yarn run deploy --network boba_rinkeby` and copy the contract address. 
+2. Add your contract address into the `set_turing.ts` file by changing the `CONTRACT_CALCULATOR` constant.
+3. Deploy and fund Turing Helper: https://docs.boba.network/turing/turing-start
+4. **NOTE: During the process you will be asked to add the address of your previously deployed smart contract.**
+
 ## Local setup
 This assumes you have common toolchains such as node/npm, etc. installed.
 

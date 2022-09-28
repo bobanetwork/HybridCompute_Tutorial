@@ -3,17 +3,25 @@ pragma solidity ^0.8.9;
 
 import "./ITuringHelper.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "base64-sol/base64.sol";
 
-contract Calculator {
+contract Calculator is Ownable {
 
     ITuringHelper public hcHelper;
     string private _hcEndpoint;
 
     event CalcResult(uint256 result);
 
-    constructor(address turingHelper_, string memory hcEndpoint_) {
-        hcHelper = ITuringHelper(turingHelper_);
+    constructor(string memory hcEndpoint_) {
+        _hcEndpoint = hcEndpoint_;
+    }
+
+    function setTuringHelper(address hcHelper_) external onlyOwner {
+        hcHelper = ITuringHelper(hcHelper_);
+    }
+
+    function setEndpoint(string memory hcEndpoint_) external onlyOwner {
         _hcEndpoint = hcEndpoint_;
     }
 

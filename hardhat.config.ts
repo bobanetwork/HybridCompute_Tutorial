@@ -2,7 +2,6 @@ import { HardhatUserConfig } from 'hardhat/types'
 import '@nomiclabs/hardhat-ethers'
 import * as dotenv from "dotenv";
 import '@openzeppelin/hardhat-upgrades';
-import { providers } from "ethers";
 
 dotenv.config();
 

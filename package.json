@@ -1,5 +1,5 @@
 {
-  "name": "university-sbt",
+  "name": "hc-example",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,9 @@
     "clean": "rm -rf ./artifacts ./cache",
     "build": "yarn build:contracts",
     "build:contracts": "hardhat compile",
+    "build:sam": "sam build --use-container",
     "deploy": "hardhat run scripts/deploy.ts",
+    "set_turing": "hardhat run scripts/set_turing.ts",
     "test:local": "hardhat --network boba_local test",
     "test:rinkeby": "hardhat --network boba_rinkeby test",
     "test:mainnet": "hardhat --network boba_mainnet test"
