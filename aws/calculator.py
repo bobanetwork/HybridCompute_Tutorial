@@ -41,8 +41,9 @@ def lambda_handler(event, context):
         print("Params: ", params)
 
     # the message sender
-    proper_time = int(params[0], 16)
-    velocity = int(params[1], 16)
+    # [0,1] for V1, [1,2] for legacy
+    proper_time = int(params[1], 16)
+    velocity = int(params[2], 16)
 
     if print_logs:
         print("Params: ", proper_time, velocity)
@@ -75,11 +76,12 @@ def calc_result(proper_time, velocity, print_logs=True):
     result = proper_time / (math.sqrt(1 - math.pow((velocity / SPEED_OF_LIGHT), 2)))
     result *= 1_000_000_000_000 # to make it usable as uint
 
-    encoded_str = encode_abi(['uint256'], [int(result)])
+    # V1 no length param (first value), for legacy first param length needed
+    encoded_str = encode_abi(['uint256', 'uint256'], [32, int(result)])
     res = Web3.toHex(encoded_str)
 
     if print_logs:
-        decoded = decode_abi(['uint256'], encoded_str)
+        decoded = decode_abi(['uint256', 'uint256'], encoded_str)
         print("ENCODED: ", encoded_str)
         print("DECODED: ", decoded)
         print("RES: ", res)

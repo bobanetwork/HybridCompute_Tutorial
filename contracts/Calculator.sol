@@ -20,7 +20,7 @@ contract Calculator {
     /// @dev Calculates time dilation according to Einstein's special relativity theory
     function calcTimeDilation(uint256 properTime, uint256 velocity) external {
         bytes memory encRequest = abi.encode(properTime, velocity);
-        bytes memory byteRes = hcHelper.TuringTxV1(_hcEndpoint, encRequest); // TODO: depending on params one might need to use V1
+        bytes memory byteRes = hcHelper.TuringTx(_hcEndpoint, encRequest); // TODO: depending on params one might need to use V1
 
         (uint256 result) = abi.decode(byteRes, (uint256));
         emit CalcResult(result);
