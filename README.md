@@ -1,24 +1,78 @@
-# Get started
+# What is it?
+This repository is a minimal example of using Hybrid-Compute on the Boba Network. 
 
-## Testnet setup
-1. Deploy your contract by running `yarn run deploy --network boba_rinkeby` and copy the contract address. 
-2. Add your contract address into the `set_turing.ts` file by changing the `CONTRACT_CALCULATOR` constant.
-3. Deploy and fund Turing Helper: https://docs.boba.network/turing/turing-start
-4. **NOTE: During the process you will be asked to add the address of your previously deployed smart contract.**
+## Quick start: Testnet setup
+1. Install dependencies with `yarn` or `npm i`
+2. Deploy your contract by running `yarn run deploy --network boba_rinkeby` 
+or just run the tests to deploy & test it on your desired network, e.g. `yarn run test:rinkeby`
 
-## Local setup
-This assumes you have common toolchains such as node/npm, etc. installed.
+### The flow
+When creating a new Hybrid-Compute project you should be aware of the following required steps to use it: 
+1. Deploy your own `TuringHelper.sol` - This is needed to introduce AccessControl and to keep track of your calls (every call costs 0.01 BOBA token).
+2. Deploy your own custom contract (in our case `Calculator.sol`) and provide the address of your deployed TuringHelper.
+3. Call `addPermittedCaller(address)` on your TuringHelper contract to add your custom contract (previous step). This is needed to whitelist your contract to use your prepaid BOBA tokens when calling HybridCompute. 
+4. Now we need to fund our TuringHelper with BOBA tokens since every call costs **0.01 BOBA** tokens. You can do this by calling `turingCredit.addBalanceTo(uint256,address)`. 
 
-1. Clone the boba repository: `git clone git@github.com:bobanetwork/boba.git`
-2. Start local stack with `BUILD=0 ./up_local.sh` from within the `/ops` directory.
--> Note for Boba devs: Ensure these Docker images already support the extended payload.
-3. Your local stack should be up running.
+**Notes to 4):**
+* You can find the contract address for the TuringCredit contract [here](https://docs.boba.network/for-developers/network-parameters) (this is deployed by the BOBA team once).
+* `turingCredit.addBalanceTo(uint256,address)`: The first param describes how many BOBA tokens you want to send to the contract (pre-pay) and the second is the address of your `TuringHelper` contract.
 
-You can now run your tests by:
-1. Copy the `.env.example` file and rename it to `.env`. 
-2. If you are just running the tests locally you don't need to adapt anything. Otherwise, update accordingly.
-3. Run `yarn` or `npm i` to set up the project.
-4. Run `yarn run test:local` or `npm run test:local` to run local tests. 
+### How to call a Hybrid-Compute function?
+When calling a function on your smart-contract that utilizes Hybrid-Compute then you need to `estimateGas` before. 
+Otherwise Hybrid-Compute won't be able to intercept the call. 
+
+```js
+await calcContract.estimateGas.calcTimeDilation(properTime, velocity, gasOverride)
+const tx = calcContract.calcTimeDilation(properTime, velocity, gasOverride)
+```
+
+
+## Hybrid Compute
+Turing is a system for interacting with the outside world from within solidity smart contracts. Ethereum is a computer with multiple strong constraints on its internal architecture and operations, all required for decentralization. As such, things that most developers take for granted - low cost data storage, audio and image processing, advanced math, millisecond response times, random number generation, and the ability to talk to any other computer - can be difficult or even impossible to run on the Ethereum "CPU". Of course, the benefits of decentralization far outweigh those limitations, and therefore, tools are desirable to add missing functionality to the Ethereum ecosystem. Turing is one such tool.
+
+Turing is a **pipe** between (**1**) Boba's Geth (aka sequencer), which takes transactions, advances the state, and forms blocks, and (**2**) your server. To use this pipe, all you need is a smart contract on Boba that makes Turing calls and an external server that accepts these calls and returns data in a format that can be understood by the EVM. This is not hard to do and we provide many examples which will allow you to quickly build a working Turing system.
+
+* Official examples - [[here]](https://github.com/bobanetwork/boba/tree/develop/boba_examples)
+* Official documentation - [[here]](https://docs.boba.network/turing)
+
+## Core components
+All Hybrid Compute projects (synonymous for Turing) usually consist of 3 core components: 
+* The main smart contract where you put your on-chain logic (this is the `Calculator.sol` in our case),
+* The backend / API where you put your off-chain logic (in this case `calculator.py`),
+* And the `TuringHelper.sol which you basically just can copy, paste and deploy. This is needed to add some accessControl logic and to keep track of your calls since you are being charged by call. 
+
+`\contracts\Calculator.sol` [[here]](contracts/Calculator.sol): Our main smart-contract that contains a function that expects the `properTime` and `velocity` parameter and triggers our API endpoint with those parameters.  
+```solidity 
+calcTimeDilation(uint256 properTime, uint256 velocity)
+```
+
+`\aws\calculator.py` [[here]](aws/calculator.py): Backend API - this endpoint will be called by our smart-contract.
+
+`\contracts\TuringHelper.sol` [[here]](contracts/TuringHelper.sol): Official BOBA standard (no changes needed). This contract needs to be deployed to add some kind of access control (which contract is allowed to make requests) and to allow the TuringCredit contract to keep track of API requests that have been sent since every call costs 0.01 BOBA.  
+
+### Other interesting files
+
+`\aws\template.yaml` [[here]](aws/template.yaml): We are usually using [AWS](https://aws.amazon.com/) for our HybridCompute services. This is a so-called [SAM-template](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification.html) that you can use to deploy the backend on your own backend automatically.
+
+`\test\Calculator.ts` [[here]](test/Calculator.ts): This file just contains some basic test-cases to verify that your stack is working. 
+
+`\scripts\deploy.ts` [[here]](scripts/deploy.ts): Deploy your smart-contract(s). 
+
+`\workshop-examples\**\*` [[here]](workshop-examples): This folder contains some further examples that you could dig into. 
+Speaking of examples you could also have a look at [these examples](https://github.com/bobanetwork/boba/tree/develop/boba_examples).
+
+## Background
+This project calculates the time dilation according to Albert Einstein's special relativity theory. Please find the formula below.
+
+$$ observerTime = { properTime \over \sqrt{1 - ({velocity \over speedOfLight})^2}} $$
+
+Basically this states that time can pass at different rates in different reference frames. The time depends on the velocity of one reference frame relative to another. 
+
+For us this basically just means we can calculate how the time is diluted from our perspective (the observer) when an object moves at a specific speed.
+
+You can find the implementation of this formula in `\aws\calculator.py:calc_result()`.
+
+
 
 
 
