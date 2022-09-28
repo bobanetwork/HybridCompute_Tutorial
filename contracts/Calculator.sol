@@ -13,8 +13,9 @@ contract Calculator is Ownable {
 
     event CalcResult(uint256 result);
 
-    constructor(string memory hcEndpoint_) {
+    constructor(address hcHelper_, string memory hcEndpoint_) {
         _hcEndpoint = hcEndpoint_;
+        hcHelper = ITuringHelper(hcHelper_);
     }
 
     function setTuringHelper(address hcHelper_) external onlyOwner {
