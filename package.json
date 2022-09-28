@@ -10,6 +10,7 @@
     "build:sam": "sam build --use-container",
     "deploy": "hardhat run scripts/deploy.ts",
     "set_turing": "hardhat run scripts/set_turing.ts",
+    "add_contract": "hardhat run scripts/add_contract_turing.ts",
     "test:local": "hardhat --network boba_local test",
     "test:rinkeby": "hardhat --network boba_rinkeby test",
     "test:mainnet": "hardhat --network boba_mainnet test"

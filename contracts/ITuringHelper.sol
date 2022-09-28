@@ -17,6 +17,6 @@ interface ITuringHelper {
        offchain interaction.
     */
     function TuringTx(string memory _url, bytes memory _payload) external returns (bytes memory);
-
+    // V1 not online yet on testnet/mainnet
     function TuringRandom() external returns (uint256);
 }

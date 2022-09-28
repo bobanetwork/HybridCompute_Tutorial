@@ -55,14 +55,14 @@ describe("Calculator", () => {
 
   //#endregion
 
-  it("Your contract should be whitelisted", async () => {
+  /*it("Your contract should be whitelisted", async () => {
     const tr2 = await helper.checkPermittedCaller(calcContract.address, gasOverride)
     const res2 = await tr2.wait()
     const rawData = res2.events[0].data
     const result = parseInt(rawData.slice(-64), 16)
     expect(result).to.equal(1)
     console.log("Contract whitelisted in TuringHelper (1 = yes)?", result)
-  })
+  })*/
 
   it('Calculate time dilation acc. to Einstein\'s special relativity theory', async () => {
     const properTime = 15;
