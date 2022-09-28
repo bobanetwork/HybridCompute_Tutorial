@@ -26,12 +26,14 @@ contract Calculator is Ownable {
         _hcEndpoint = hcEndpoint_;
     }
 
-    /// @dev Calculates time dilation according to Einstein's special relativity theory
+    // TODO: Add your HybridCompute function here
+    /** @dev The backend expects two integers: properTime, velocity.
+      * API call returns integer with result. */
     function calcTimeDilation(uint256 properTime, uint256 velocity) external {
-        bytes memory encRequest = abi.encode(properTime, velocity);
-        bytes memory byteRes = hcHelper.TuringTx(_hcEndpoint, encRequest); // TODO: depending on params one might need to use V1
+        // 1. Encode parameters
+        // 2. Send request and get bytes
+        // 3. Decode bytes to expected dataTypes
 
-        (uint256 result) = abi.decode(byteRes, (uint256));
-        emit CalcResult(result);
+        emit CalcResult(res);
     }
 }

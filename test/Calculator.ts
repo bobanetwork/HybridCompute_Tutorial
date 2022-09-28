@@ -141,20 +141,19 @@ describe("Calculator", function() {
     expect(helperAddress).to.equal(hcHelper.address);
   });
 
-  it('Calculate time dilation acc. to Einstein\'s special relativity theory', async () => {
-    const properTime = 15;
-    const velocity = 299792; // almost light speed
+  it('Calculate timeDilation', async () => {
+    const properTime = 15
+    const velocity = 299792
+    const expectedResult = 8_581_318_860_107_011
 
     await calcContract.estimateGas.calcTimeDilation(properTime, velocity, gasOverride)
     const tx = calcContract.calcTimeDilation(properTime, velocity, gasOverride)
-    await expect(tx).to.emit(calcContract, "CalcResult").withArgs(8581318860107011)
+    await expect(tx).to.emit(calcContract, "CalcResult").withArgs(expectedResult)
 
-    const newTime = 8_581_318_860_107_011 / 1_000_000_000_000;
-    const timeDilation = newTime - properTime;
-
+    const newTime = expectedResult / 1_000_000_000_000
+    const timeDilation = newTime - properTime
     console.log(`Time dilation for properTime: ${timeDilation}`)
   })
-
 });
 
 

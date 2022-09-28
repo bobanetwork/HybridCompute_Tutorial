@@ -3,8 +3,12 @@ This repository is a minimal example of using Hybrid-Compute on the Boba Network
 
 ## Quick start: Testnet setup
 1. Install dependencies with `yarn` or `npm i`
-2. Deploy your contract by running `yarn run deploy --network boba_rinkeby` 
-or just run the tests to deploy & test it on your desired network, e.g. `yarn run test:rinkeby`
+2. Copy `.env.example`, rename to `.env` and add one of your private keys
+3. Get Boba testnet tokens from [Gateway Rinkeby](https://gateway.rinkeby.boba.network/)
+4. Fill in the TODO's in the `Calculator.sol:calcTimeDilation` function.
+5. Deploy your contract incl. the tests, e.g. `yarn run test:rinkeby`
+
+NOTE: The backend has already been deployed for this workshop. 
 
 ### The flow
 When creating a new Hybrid-Compute project you should be aware of the following required steps to use it: 
