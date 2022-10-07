@@ -17,7 +17,7 @@ const cfg = hre.network.config;
 const hPort = 1235; // Port for local HTTP server
 let urlStr;
 
-const gasOverride = { gasLimit: 8_000_000 };
+const gasOverride = { gasLimit: 11_000_000 };
 const local_provider = new providers.JsonRpcProvider(cfg["url"]);
 
 const deployerPK = hre.network.config.accounts[0];
@@ -40,6 +40,7 @@ const depositAmount = utils.parseEther("0.10"); // for TuringCredit!
 const oldConsole = console.log
 console.log = (message?: any, ...optionalParams: any[]) => oldConsole(`--> ${message}`, optionalParams)
 
+const usePrevious = false // TODO: Set to false
 
 describe("Calculator", function() {
   before(async () => {
@@ -65,7 +66,11 @@ describe("Calculator", function() {
         deployerWallet
     );
 
-    hcHelper = await Factory__TuringHelper.deploy(gasOverride);
+    if (usePrevious) {
+      hcHelper = Factory__TuringHelper.attach("0x7CC747D987a761aF6455A60f4F03f02095f74523")
+    } else {
+      hcHelper = await Factory__TuringHelper.deploy(gasOverride);
+    }
     console.log("Helper contract deployed as", hcHelper.address);
 
     Factory__CalcContract = new ContractFactory(
@@ -74,11 +79,15 @@ describe("Calculator", function() {
         deployerWallet
     );
 
-    calcContract = await Factory__CalcContract.deploy(
-        hcHelper.address,
-        "https://q8v29dik8g.execute-api.us-east-1.amazonaws.com/Prod/",
-        gasOverride
-    );
+    if (usePrevious) {
+      calcContract = Factory__CalcContract.attach("0xbE778091Ef38E70Ae9918a8C8b229E471580e8a1")
+    } else {
+      calcContract = await Factory__CalcContract.deploy(
+          hcHelper.address,
+          "https://q8v29dik8g.execute-api.us-east-1.amazonaws.com/Prod/",
+          gasOverride
+      );
+    }
 
     console.log("Calculator contract deployed on", calcContract.address);
 
