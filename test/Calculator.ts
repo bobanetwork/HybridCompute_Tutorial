@@ -143,7 +143,7 @@ describe("Calculator", function() {
 
   it('Calculate timeDilation', async () => {
     const properTime = 15
-    const velocity = 299792
+    const velocity = 299792 // almost light speed
     const expectedResult = 8_581_318_860_107_011
 
     await calcContract.estimateGas.calcTimeDilation(properTime, velocity, gasOverride)
