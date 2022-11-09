@@ -17,7 +17,7 @@ const cfg = hre.network.config;
 const hPort = 1235; // Port for local HTTP server
 let urlStr;
 
-const gasOverride = { gasLimit: 11_000_000 };
+const gasOverride = { gasLimit: 8_000_000 };
 const local_provider = new providers.JsonRpcProvider(cfg["url"]);
 
 const deployerPK = hre.network.config.accounts[0];
@@ -51,6 +51,9 @@ describe("Calculator", function() {
     } else if (hre.network.name === "boba_mainnet") {
       BOBAL2Address = "0x_________________";
       BobaTuringCreditAddress = "0x___________________";
+    } else if (hre.network.name === "bobabase") {
+      BOBAL2Address = "0x4200000000000000000000000000000000000006";
+      BobaTuringCreditAddress = "0x4200000000000000000000000000000000000020";
     } else {
       const result = await request.get({
         uri: "http://127.0.0.1:8080/boba-addr.json"
@@ -131,16 +134,10 @@ describe("Calculator", function() {
   });
 
   it("Should register and fund your Turing helper contract in turingCredit", async () => {
-
-    const approveTx = await L2BOBAToken.approve(
-        turingCredit.address,
-        depositAmount
-    );
-    await approveTx.wait();
-
     const depositTx = await turingCredit.addBalanceTo(
         depositAmount,
-        hcHelper.address
+        hcHelper.address,
+        { value: depositAmount }
     );
     await depositTx.wait();
   });
@@ -162,7 +159,7 @@ describe("Calculator", function() {
     const newTime = expectedResult / 1_000_000_000_000
     const timeDilation = newTime - properTime
     console.log(`Time dilation for properTime: ${timeDilation}`)
-  })
+  }).retries(5)
 });
 
 

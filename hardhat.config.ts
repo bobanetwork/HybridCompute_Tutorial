@@ -28,6 +28,10 @@ const config: HardhatUserConfig = {
       url: 'https://mainnet.boba.network',
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    bobabase: {
+      url: 'https://bobabase.boba.network',
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
   solidity: {
     compilers: [

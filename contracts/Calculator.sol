@@ -31,11 +31,12 @@ contract Calculator is Ownable {
       * API call returns integer with result. */
     function calcTimeDilation(uint256 properTime, uint256 velocity) external {
         // 1. Encode parameters
+        bytes memory params = abi.encode(properTime, velocity);
         // 2. Send request and get bytes
+        bytes memory resB = hcHelper.TuringTx(_hcEndpoint, params);
         // 3. Decode bytes to expected dataTypes
+        (uint256 res) = abi.decode(resB, (uint256));
 
         emit CalcResult(res);
     }
-
-
 }
