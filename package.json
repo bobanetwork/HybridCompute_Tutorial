@@ -12,7 +12,7 @@
     "set_turing": "hardhat run scripts/set_turing.ts",
     "add_contract": "hardhat run scripts/add_contract_turing.ts",
     "test:local": "hardhat --network boba_local test",
-    "test:rinkeby": "hardhat --network boba_rinkeby test",
+    "test:goerli": "hardhat --network boba_goerli test",
     "test:mainnet": "hardhat --network boba_mainnet test"
   },
   "devDependencies": {
